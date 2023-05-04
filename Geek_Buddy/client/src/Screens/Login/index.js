@@ -12,12 +12,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../../../firebase";
 import { signInWithEmailAndPassword } from "@firebase/auth";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
 
   const handleLogin = async () => {
     try {
@@ -26,7 +28,6 @@ const Login = () => {
         setEmail("");
         setPassword("");
         console.log(user);
-        navigation.navigate("Home");
         setLoading(false);
       });
     } catch (error) {
@@ -37,14 +38,11 @@ const Login = () => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "#8cc36a",
+        backgroundColor: "#1d83ee",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      {/* {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" animating={loading} />
-      ) : null} */}
       <View style={styles.main_Content}>
         <View style={styles.input_wrapper}>
           <TextInput
@@ -60,13 +58,22 @@ const Login = () => {
             selectionColor={"black"}
             style={styles.Input}
             onChangeText={(text) => setPassword(text)}
+            secureTextEntry={hidePassword}
           />
+
+          <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
+            {hidePassword ? (
+              <Ionicons style={{ right: 10 }} name="eye-off" size={20} />
+            ) : (
+              <Ionicons style={{ right: 10 }} name="eye" size={20} />
+            )}
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={{
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#8cc36a",
+            backgroundColor: "#1d83ee",
             borderRadius: 5,
             marginTop: 20,
           }}
@@ -102,7 +109,7 @@ const Login = () => {
         >
           <Text style={{ padding: 5 }}>Don't have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-            <Text style={{ color: "#8cc36a", padding: 5 }}>Sign Up here</Text>
+            <Text style={{ color: "#1d83ee", padding: 5 }}>Sign Up here</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -131,7 +138,7 @@ const Login = () => {
           style={{
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#507dc0",
+            backgroundColor: "#1d83ee",
             borderRadius: 5,
             marginTop: 15,
             flexDirection: "row",
@@ -166,6 +173,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 15,
     width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   Input: {
     padding: 8,

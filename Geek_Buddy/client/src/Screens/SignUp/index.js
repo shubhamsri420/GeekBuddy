@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,11 +8,13 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Antdesign from "@expo/vector-icons/AntDesign";
 import { auth } from "../../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const SignUp = () => {
   const navigation = useNavigation();
@@ -23,6 +25,7 @@ const SignUp = () => {
   const [lastName, setLastName] = useState();
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -50,20 +53,19 @@ const SignUp = () => {
     }
   };
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFF" }}>
-      <SafeAreaView>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ left: 15 }}
-          >
-            <Antdesign name="arrowleft" size={30} color="#FFFF" />
-          </TouchableOpacity>
-          <View style={{ width: "70%" }}>
-            <Text style={styles.header_Text}>Registration</Text>
-          </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ left: 15 }}
+        >
+          <Antdesign name="arrowleft" size={30} color="#FFFF" />
+        </TouchableOpacity>
+        <View style={{ width: "70%" }}>
+          <Text style={styles.header_Text}>Registration</Text>
         </View>
-
+      </View>
+      <KeyboardAwareScrollView>
         <View style={styles.main_content}>
           <View style={styles.input_wrapper}>
             <TextInput
@@ -96,6 +98,13 @@ const SignUp = () => {
               selectionColor={"black"}
               onChangeText={(text) => setPassword(text)}
             />
+            <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
+              {hidePassword ? (
+                <Ionicons style={{ right: 10 }} name="eye-off" size={20} />
+              ) : (
+                <Ionicons style={{ right: 10 }} name="eye" size={20} />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
         <View
@@ -179,8 +188,8 @@ const SignUp = () => {
             </View>
           )}
         </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -207,6 +216,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 2,
     marginTop: 15,
+    flexDirection: "row",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   Input: {
     padding: 10,
