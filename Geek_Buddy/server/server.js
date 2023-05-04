@@ -46,6 +46,5 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.listen(3000, () =>
-  console.log("sever is running on port http://localhost:3000 ")
-);
+app.listen(19000, "192.168.1.2")
+ 
