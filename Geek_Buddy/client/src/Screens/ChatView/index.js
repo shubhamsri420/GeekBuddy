@@ -53,11 +53,13 @@ const ChatScreen = () => {
             alignItems: "center",
             flexDirection: "row",
             backgroundColor: "#138bf5",
+            borderBottomRightRadius: 20,
+            borderBottomLeftRadius: 20,
           }}
         >
           <TouchableOpacity onPress={onPress}>
             <AntDesign
-              style={{ padding: 10 }}
+              style={{ padding: 15 }}
               name="menu-fold"
               size={30}
               color="#FFFF"
@@ -65,7 +67,7 @@ const ChatScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLogOut()}>
             <AntDesign
-              style={{ right: 10, padding: 10 }}
+              style={{ right: 10, padding: 15 }}
               name="logout"
               size={30}
               color="#FFFF"
@@ -96,7 +98,7 @@ const ChatScreen = () => {
             </View>
             <View style={{}}>
               <Image
-                style={{ height: 150, width: 150, borderRadius: 50 }}
+                style={{ height: 100, width: 100, borderRadius: 50 }}
                 source={require("../../../assets/512x512bb.jpg")}
               />
             </View>
@@ -140,13 +142,14 @@ const ChatScreen = () => {
 
           <View
             style={{
-              width: "100%",
+              width: "80%",
+              height: "40%",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <Image
-              style={{ height: 300, width: "90%" }}
+              style={{ height: "100%", width: "100%", resizeMode: "cover" }}
               source={require("../../../assets/chatScreen.png")}
             />
           </View>
@@ -259,20 +262,24 @@ const ChatScreen = () => {
                   borderTopRightRadius: 30,
                   backgroundColor: "#FFFF",
                   paddingTop: 10,
+                  justifyContent: "space-between",
                 }}
               >
+                <View>
+                  <Button
+                    style={{ backgroundColor: "#1d83ee" }}
+                    title={"History"}
+                    onPress={() => {}}
+                  />
+                  <Button
+                    style={{ backgroundColor: "#1d83ee" }}
+                    title={"Important Notes"}
+                  />
+                </View>
+
                 <Button
-                  style={{ backgroundColor: "#1d83ee" }}
-                  title={"History"}
-                  onPress={() => {}}
-                />
-                <Button
-                  style={{ backgroundColor: "#1d83ee" }}
-                  title={"Important Notes"}
-                />
-                <Button
-                  style={{ backgroundColor: "#1d83ee" }}
-                  title={"history"}
+                  style={{ backgroundColor: "red", marginBottom: "40%" }}
+                  title={"Logout"}
                 />
               </View>
             </View>

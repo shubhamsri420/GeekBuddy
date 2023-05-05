@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useCallback, useRef } from "react";
 import {
   Text,
   View,
@@ -15,14 +15,30 @@ import { auth } from "../../../firebase";
 import { signOut } from "firebase/auth";
 import TypeWriter from "../../Typewriter";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
+import BottomSheet from "../../components/BottomSheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Button from "../../components/Button";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Home = () => {
   const navigation = useNavigation();
+  const ref = useRef(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [modaldata, setModalData] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [editedText, setEditedText] = useState(modaldata);
+
+  const onPress = useCallback(() => {
+    const isActive = ref?.current?.isActive();
+    if (isActive) {
+      ref?.current?.scrollTo(0);
+    } else {
+      ref?.current?.scrollTo(-500);
+    }
+  }, []);
 
   const handleSubmit = async () => {
     const formData = new FormData();
@@ -104,202 +120,216 @@ const Home = () => {
         flex: 1,
       }}
     >
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-        presentationStyle="pageSheet"
-      >
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <View
           style={{
             flex: 1,
-            backgroundColor: "#FFF",
           }}
         >
-          <View
-            style={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#138bf5",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(!modalVisible);
+          {messages.length !== 0 ? (
+            <ScrollView
+              ref={(ref) => {
+                scrollViewRef = ref;
+              }}
+              onContentSizeChange={() =>
+                scrollViewRef.scrollToEnd({ animated: true })
+              }
+            >
+              {messages.map((message, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 5,
+                    padding: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      marginRight: 8,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {message.isAi ? (
+                      <Image
+                        style={{ height: 40, width: 40, borderRadius: 20 }}
+                        source={require("../../../assets/512x512bb.jpg")}
+                      />
+                    ) : (
+                      <MaterialIcons
+                        name="emoji-emotions"
+                        size={43}
+                        color="#424654"
+                      />
+                    )}
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      flex: 1,
+                      padding: 8,
+                      borderTopEndRadius: 15,
+                      borderTopLeftRadius: 15,
+                      borderBottomLeftRadius: 15,
+                      backgroundColor: message.isAi ? "#138bf5" : "#dcdcdc",
+                    }}
+                    onLongPress={() => {
+                      onPress(), IsModelOpen(message.value);
+                    }}
+                  >
+                    {message.isAi ? (
+                      message.value[0] === "!" ? (
+                        handleImage(message.value)
+                      ) : (
+                        <TypeWriter text={message.value} speed={50} />
+                      )
+                    ) : (
+                      <Text
+                        style={{
+                          color: "#138bf5",
+                          fontSize: 20,
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {message.value}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <AntDesign
-                style={{ padding: 10 }}
-                name="back"
-                size={30}
-                color="#FFFF"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <AntDesign name="star" size={30} color="#FFF" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
-              <AntDesign
-                style={{ right: 10, padding: 10 }}
-                name="sharealt"
-                size={30}
-                color="#FFFF"
-              />
-            </TouchableOpacity>
-          </View>
+              <Text
+                style={{ fontSize: 25, fontWeight: "500", color: "#d3d3d3" }}
+              >
+                Type your query...
+              </Text>
+            </View>
+          )}
+
           <View
             style={{
-              flex: 1,
-              // backgroundColor: "red",
-              // justifyContent: "center",
+              flexDirection: "row",
               alignItems: "center",
+              paddingVertical: 20,
+              paddingHorizontal: 16,
+              justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 20, padding: 10, color: "#138bf5" }}>
-              {modaldata}
-            </Text>
+            <TextInput
+              value={inputText}
+              placeholder="Enter your query......"
+              onChangeText={(text) => setInputText(text)}
+              style={{
+                flex: 1,
+                borderRadius: 10,
+                paddingVertical: 15,
+                paddingHorizontal: 16,
+                marginRight: 8,
+                backgroundColor: "#ddd",
+                elevation: 5,
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#138bf5",
+                justifyContent: "center",
+                borderRadius: 50,
+                elevation: 5,
+              }}
+              onPress={() => handleSubmit()}
+            >
+              <Image
+                style={{ height: 50, width: 50, borderRadius: 50 }}
+                source={require("../../../assets/2654384-middle.png")}
+              />
+            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
 
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
-        {messages.length !== 0 ? (
-          <ScrollView
-            ref={(ref) => {
-              scrollViewRef = ref;
-            }}
-            onContentSizeChange={() =>
-              scrollViewRef.scrollToEnd({ animated: true })
-            }
-          >
-            {messages.map((message, index) => (
+          <BottomSheet ref={ref}>
+            <View style={{ flex: 1, backgroundColor: "#138bf5", elevation: 8 }}>
               <View
-                key={index}
                 style={{
                   flexDirection: "row",
-                  marginTop: 5,
-                  padding: 5,
+                  justifyContent: "space-around",
+                  alignItems: "center",
                 }}
               >
-                <View
-                  style={{
-                    marginRight: 8,
-                    width: 40,
-                    height: 40,
-                    borderRadius: 50,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {message.isAi ? (
-                    <Image
-                      style={{ height: 40, width: 40, borderRadius: 20 }}
-                      source={require("../../../assets/512x512bb.jpg")}
-                    />
-                  ) : (
-                    <MaterialIcons
-                      name="emoji-emotions"
-                      size={43}
-                      color="#424654"
-                    />
-                  )}
-                </View>
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    padding: 8,
-                    borderTopEndRadius: 15,
-                    borderTopLeftRadius: 15,
-                    borderBottomLeftRadius: 15,
-                    backgroundColor: message.isAi ? "#138bf5" : "#dcdcdc",
-                  }}
-                  onLongPress={() => {
-                    setModalVisible(!modalVisible), IsModelOpen(message.value);
-                  }}
-                >
-                  {message.isAi ? (
-                    message.value[0] === "!" ? (
-                      handleImage(message.value)
-                    ) : (
-                      <TypeWriter text={message.value} speed={50} />
-                    )
-                  ) : (
-                    <Text
-                      style={{
-                        color: "#138bf5",
-                        fontSize: 20,
-                        fontStyle: "italic",
+                <Text style={{ fontSize: 20, padding: 15 }}>Header</Text>
+                <View>
+                  {isEdit ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsEdit(!isEdit), setModalData(editedText);
                       }}
                     >
-                      {message.value}
-                    </Text>
+                      <Feather name="check-square" size={30} color="#FFF" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsEdit(!isEdit), setEditedText(modaldata);
+                      }}
+                    >
+                      <Feather name="edit" size={30} color="#FFF" />
+                    </TouchableOpacity>
                   )}
+                </View>
+                <TouchableOpacity>
+                  <Feather name="share-2" size={30} color="#FFF" />
                 </TouchableOpacity>
               </View>
-            ))}
-          </ScrollView>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 25, fontWeight: "500", color: "#d3d3d3" }}>
-              Type your query...
-            </Text>
-          </View>
-        )}
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 20,
-            paddingHorizontal: 16,
-            justifyContent: "space-between",
-          }}
-        >
-          <TextInput
-            value={inputText}
-            placeholder="Enter your query......"
-            onChangeText={(text) => setInputText(text)}
-            style={{
-              flex: 1,
-              borderRadius: 10,
-              paddingVertical: 15,
-              paddingHorizontal: 16,
-              marginRight: 8,
-              backgroundColor: "#ddd",
-              elevation: 5,
-            }}
-          />
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#138bf5",
-              justifyContent: "center",
-              borderRadius: 50,
-              elevation: 5,
-            }}
-            onPress={() => handleSubmit()}
-          >
-            <Image
-              style={{ height: 50, width: 50, borderRadius: 50 }}
-              source={require("../../../assets/2654384-middle.png")}
-            />
-          </TouchableOpacity>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "#FFF",
+                  borderTopLeftRadius: 30,
+                  borderTopRightRadius: 30,
+                  padding: 10,
+                }}
+              >
+                {isEdit ? (
+                  <>
+                    <TextInput
+                      style={{
+                        width: "100%",
+                        height: "40%",
+                        // flex: 1,
+                        padding: 10,
+                        fontSize: 15,
+                        fontWeight: "400",
+                        // color: "#138bf5",
+                        // backgroundColor: "#138bf5",
+                        borderRadius: 20,
+                      }}
+                      multiline={true}
+                      value={editedText}
+                      onChangeText={(text) => setEditedText(text)}
+                      scrollEnabled={true}
+                    />
+                  </>
+                ) : (
+                  <Text
+                    style={{ fontSize: 15, fontWeight: "400", padding: 10 }}
+                  >
+                    {modaldata}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </BottomSheet>
         </View>
-      </View>
+      </GestureHandlerRootView>
     </SafeAreaView>
   );
 };

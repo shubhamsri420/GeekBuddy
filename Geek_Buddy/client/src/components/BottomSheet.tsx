@@ -49,10 +49,10 @@ const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
       .onStart(() => {
         context.value = { y: translateY.value };
       })
-      // .onUpdate((event) => {
-      //   translateY.value = event.translationY + context.value.y;
-      //   translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-      // })
+      .onUpdate((event) => {
+        translateY.value = event.translationY + context.value.y;
+        translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+      })
       .onEnd(() => {
         if (translateY.value > -SCREEN_HEIGHT / 3) {
           scrollTo(0);

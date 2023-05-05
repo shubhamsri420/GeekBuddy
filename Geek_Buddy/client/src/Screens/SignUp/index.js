@@ -119,7 +119,7 @@ const SignUp = () => {
             style={{
               height: 15,
               width: 15,
-              backgroundColor: "#8cc36a",
+              backgroundColor: "#1d83ee",
               borderRadius: 5,
               justifyContent: "center",
               alignItems: "center",
@@ -132,7 +132,7 @@ const SignUp = () => {
           </TouchableOpacity>
           <View style={{ flexDirection: "row" }}>
             <Text style={{}}>I accept</Text>
-            <Text style={{ color: "green", left: 3 }}>Terms of Use</Text>
+            <Text style={{ color: "#1d83ee", left: 3 }}>Terms of Use</Text>
           </View>
         </View>
         <View style={{ padding: 20 }}>
@@ -141,7 +141,7 @@ const SignUp = () => {
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#8cc36a",
+                backgroundColor: "#1d83ee",
                 borderRadius: 5,
               }}
               onPress={() => handleSignUp()}
@@ -162,7 +162,7 @@ const SignUp = () => {
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#8cc36a",
+                backgroundColor: "#1d83ee",
                 borderRadius: 5,
                 opacity: 0.5,
               }}
@@ -170,7 +170,7 @@ const SignUp = () => {
               {loading ? (
                 <ActivityIndicator
                   size="large"
-                  color="#8cc36a"
+                  color="#1d83ee"
                   animating={loading}
                 />
               ) : (
@@ -196,7 +196,7 @@ const SignUp = () => {
 export default SignUp;
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#8cc36a",
+    backgroundColor: "#1d83ee",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
