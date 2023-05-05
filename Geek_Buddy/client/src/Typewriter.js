@@ -17,7 +17,7 @@ const TypeWriter = ({ text, speed, textColor }) => {
   return (
     <Text
       style={{
-        color: '#FFFF',
+        color: textColor,
         fontSize: 20,
         fontStyle: "italic",
       }}

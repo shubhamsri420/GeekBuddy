@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useRef } from "react";
+import React, { Component, useCallback, useEffect, useRef } from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
@@ -20,6 +20,7 @@ const ChatScreen = () => {
     "Dan-bold": require("../../../assets/Fonts/DancingScript-Bold.ttf"),
     "Dan-med": require("../../../assets/Fonts/DancingScript-Medium.ttf"),
   });
+
   const handleLogOut = () => {
     auth
       .signOut()
