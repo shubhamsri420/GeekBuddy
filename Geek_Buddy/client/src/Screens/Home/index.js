@@ -24,7 +24,12 @@ const Home = () => {
   const navigation = useNavigation();
   const ref = useRef(null);
 
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      isAi: false,
+      value: "Hello Buddy, how can help you?",
+    },
+  ]);
   const [inputText, setInputText] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [modaldata, setModalData] = useState("");
@@ -139,11 +144,15 @@ const Home = () => {
               source={require("../../../assets/512x512bb.jpg")}
             />
           ) : (
-            <MaterialIcons name="emoji-emotions" size={43} color="#FFFF" />
+            <MaterialIcons name="emoji-emotions" size={43} color="#a9a9a9" />
           )}
         </View>
         {item.isAi ? (
-          <BotChatBubble message={item.value} />
+          <BotChatBubble
+            message={item.value}
+            onPress={onPress}
+            setEditedText={setEditedText}
+          />
         ) : (
           <SenderChatBubble message={item.value} handleSubmit={handleSubmit} />
         )}
@@ -158,160 +167,152 @@ const Home = () => {
       }}
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ImageBackground
-          resizeMode="cover"
-          style={{ flex: 1, justifyContent: "center" }}
-          source={require("../../../assets/AIbackImage.jpg")}
+        <View
+          style={{
+            flex: 1,
+          }}
         >
+          {messages.length !== 0 ? (
+            <FlatList
+              data={messages}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{ fontSize: 25, fontWeight: "500", color: "#d3d3d3" }}
+              >
+                Type your query...
+              </Text>
+            </View>
+          )}
+
           <View
             style={{
-              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 20,
+              paddingHorizontal: 16,
+              justifyContent: "space-between",
             }}
           >
-            {messages.length !== 0 ? (
-              <FlatList
-                data={messages}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+            <TextInput
+              value={inputText}
+              placeholder="Enter your query......"
+              onChangeText={(text) => setInputText(text)}
+              style={{
+                flex: 1,
+                borderRadius: 10,
+                paddingVertical: 15,
+                paddingHorizontal: 16,
+                marginRight: 8,
+                backgroundColor: "#ddd",
+                elevation: 5,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                fontSize: 18,
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#138bf5",
+                justifyContent: "center",
+                borderRadius: 50,
+                elevation: 5,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+              }}
+              onPress={() => handleSubmit(inputText)}
+            >
+              <Image
+                style={{ height: 50, width: 50, borderRadius: 50 }}
+                source={require("../../../assets/2654384-middle.png")}
               />
-            ) : (
+            </TouchableOpacity>
+          </View>
+
+          <BottomSheet ref={ref}>
+            <View style={{ flex: 1, backgroundColor: "#138bf5", elevation: 8 }}>
               <View
                 style={{
-                  flex: 1,
-                  justifyContent: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
                   alignItems: "center",
                 }}
               >
-                <Text
-                  style={{ fontSize: 25, fontWeight: "500", color: "#d3d3d3" }}
-                >
-                  Type your query...
-                </Text>
-              </View>
-            )}
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingVertical: 20,
-                paddingHorizontal: 16,
-                justifyContent: "space-between",
-              }}
-            >
-              <TextInput
-                value={inputText}
-                placeholder="Enter your query......"
-                onChangeText={(text) => setInputText(text)}
-                style={{
-                  flex: 1,
-                  borderRadius: 10,
-                  paddingVertical: 15,
-                  paddingHorizontal: 16,
-                  marginRight: 8,
-                  backgroundColor: "#ddd",
-                  elevation: 5,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  fontSize: 18,
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#138bf5",
-                  justifyContent: "center",
-                  borderRadius: 50,
-                  elevation: 5,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                }}
-                onPress={() => handleSubmit(inputText)}
-              >
-                <Image
-                  style={{ height: 50, width: 50, borderRadius: 50 }}
-                  source={require("../../../assets/2654384-middle.png")}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <BottomSheet ref={ref}>
-              <View
-                style={{ flex: 1, backgroundColor: "#138bf5", elevation: 8 }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ fontSize: 20, padding: 15 }}>Header</Text>
-                  <View>
-                    {isEdit ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setIsEdit(!isEdit), setModalData(editedText);
-                        }}
-                      >
-                        <Feather name="check-square" size={30} color="#FFF" />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setIsEdit(!isEdit), setEditedText(modaldata);
-                        }}
-                      >
-                        <Feather name="edit" size={30} color="#FFF" />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                  <TouchableOpacity>
-                    <Feather name="share-2" size={30} color="#FFF" />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: "#FFF",
-                    borderTopLeftRadius: 30,
-                    borderTopRightRadius: 30,
-                    padding: 10,
-                  }}
-                >
+                <Text style={{ fontSize: 20, padding: 15 }}>Header</Text>
+                <View>
                   {isEdit ? (
-                    <>
-                      <TextInput
-                        style={{
-                          width: "100%",
-                          height: "40%",
-                          // flex: 1,
-                          padding: 10,
-                          fontSize: 15,
-                          fontWeight: "400",
-                          // color: "#138bf5",
-                          // backgroundColor: "#138bf5",
-                          borderRadius: 20,
-                        }}
-                        multiline={true}
-                        value={editedText}
-                        onChangeText={(text) => setEditedText(text)}
-                        scrollEnabled={true}
-                      />
-                    </>
-                  ) : (
-                    <Text
-                      style={{ fontSize: 15, fontWeight: "400", padding: 10 }}
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsEdit(!isEdit), setModalData(editedText);
+                      }}
                     >
-                      {modaldata}
-                    </Text>
+                      <Feather name="check-square" size={30} color="#FFF" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIsEdit(!isEdit), setEditedText(modaldata);
+                      }}
+                    >
+                      <Feather name="edit" size={30} color="#FFF" />
+                    </TouchableOpacity>
                   )}
                 </View>
+                <TouchableOpacity>
+                  <Feather name="share-2" size={30} color="#FFF" />
+                </TouchableOpacity>
               </View>
-            </BottomSheet>
-          </View>
-        </ImageBackground>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "#FFF",
+                  borderTopLeftRadius: 30,
+                  borderTopRightRadius: 30,
+                  padding: 10,
+                }}
+              >
+                {isEdit ? (
+                  <>
+                    <TextInput
+                      style={{
+                        width: "100%",
+                        height: "40%",
+                        // flex: 1,
+                        padding: 10,
+                        fontSize: 15,
+                        fontWeight: "400",
+                        // color: "#138bf5",
+                        // backgroundColor: "#138bf5",
+                        borderRadius: 20,
+                      }}
+                      multiline={true}
+                      value={editedText}
+                      onChangeText={(text) => setEditedText(text)}
+                      scrollEnabled={true}
+                    />
+                  </>
+                ) : (
+                  <Text
+                    style={{ fontSize: 15, fontWeight: "400", padding: 10 }}
+                  >
+                    {modaldata}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </BottomSheet>
+        </View>
       </GestureHandlerRootView>
     </SafeAreaView>
   );

@@ -1,10 +1,26 @@
 import React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import TypeWriter from "../Typewriter";
+import share from "react-native-share";
 
-const BotChatBubble = ({ message, onPress }: any) => {
+const BotChatBubble = ({ message, onPress, setEditedText }: any) => {
   const bubbleStyle = styles.otherBubble;
   const textStyle = styles.otherText;
+
+  // const Share = () => {
+  //   const options = {
+  //     message: message,
+  //   };
+  //   share
+  //     .open(options)
+  //     .then((res: any) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err: any) => {
+  //       err && console.log(err);
+  //     });
+  // };
 
   const handleImage = (image: any) => {
     const url = image.split("(");
@@ -23,15 +39,31 @@ const BotChatBubble = ({ message, onPress }: any) => {
   };
 
   return (
-    <View>
-      {message[0] === "!" ? (
-        handleImage(message)
+    <>
+      {message === "searching....." ? (
+        <View style={{}}>
+          <Image
+            style={{ height: 50, width: 50 }}
+            source={require("../../assets/02-45-27-186_512.webp")}
+          />
+        </View>
       ) : (
-        <View style={[styles.bubbleContainer, bubbleStyle]}>
-          <TypeWriter text={message} speed={50} textColor={"black"} />
+        <View>
+          {message[0] === "!" ? (
+            handleImage(message)
+          ) : (
+            <View style={[styles.bubbleContainer, bubbleStyle]}>
+              <View style={{ width: "90%" }}>
+                <TypeWriter text={message} speed={50} textColor={"black"} />
+              </View>
+              <TouchableOpacity onPress={onPress}>
+                <FontAwesome name="share" size={25} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
-    </View>
+    </>
   );
 };
 
@@ -42,11 +74,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginHorizontal: 10,
     marginVertical: 5,
-    width: "85%",
+    width: "88%",
     elevation: 8,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   selfBubble: {
     alignSelf: "flex-end",
