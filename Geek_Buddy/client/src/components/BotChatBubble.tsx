@@ -2,25 +2,15 @@ import React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import TypeWriter from "../Typewriter";
-import share from "react-native-share";
 
-const BotChatBubble = ({ message, onPress, setEditedText }: any) => {
+
+
+
+const BotChatBubble = ({ message, onPress }: any) => {
   const bubbleStyle = styles.otherBubble;
   const textStyle = styles.otherText;
 
-  // const Share = () => {
-  //   const options = {
-  //     message: message,
-  //   };
-  //   share
-  //     .open(options)
-  //     .then((res: any) => {
-  //       console.log(res);
-  //     })
-  //     .catch((err: any) => {
-  //       err && console.log(err);
-  //     });
-  // };
+  
 
   const handleImage = (image: any) => {
     const url = image.split("(");
