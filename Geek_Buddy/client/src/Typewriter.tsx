@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Text } from "react-native";
+import * as Speech from "expo-speech";
 
-const TypeWriter = ({ text, speed, textColor }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+interface PropsType {
+  text?: string | undefined;
+  speed?: number | undefined;
+  textColor?: string | undefined;
+}
+type Text1 = string;
+
+const TypeWriter: React.FC<PropsType> = ({ text, speed, textColor }) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const speak = (Text: string) => {
+    const thingToSay = Text;
+    Speech.speak(thingToSay);
+
+    // Speech.speed(1);
+  };
+
+  useEffect(() => {
+    speak(text);
+  }, []);
 
   useEffect(() => {
     if (currentIndex < text.length) {
